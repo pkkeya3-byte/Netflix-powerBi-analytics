@@ -1,0 +1,9 @@
+version: 2
+
+sources:
+  - name: raw
+    database: netflix_analytics
+    schema: raw
+    tables:
+      - name: movies
+      - name: tv_shows
