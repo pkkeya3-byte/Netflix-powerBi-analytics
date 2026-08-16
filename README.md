@@ -1,6 +1,6 @@
-Netflix Content Analytics — Snowflake, dbt & Power BI
+Netflix Content Analytics - Snowflake, dbt & Power BI
 
-An interactive 4-page Power BI report built on a Snowflake + dbt ETL pipeline, analyzing 32,000+ Netflix titles (movies and TV shows) enriched with TMDB data — budget, revenue, ratings, popularity, and cast/genre/country detail.
+An interactive 4-page Power BI report built on a Snowflake + dbt ETL pipeline, analyzing 32,000+ Netflix titles (movies and TV shows) enriched with TMDB data - budget, revenue, ratings, popularity, and cast/genre/country detail.
 
 Overview
 
@@ -21,13 +21,13 @@ Data Quality Issues Found and Fixed
 
 This dataset had several real problems that would have silently produced misleading charts if shipped as-is:
 
-rating and vote_average were 100% identical columns — dropped the redundant one.
-duration was 100% null for every movie row — excluded from the movies model; TV shows kept their real seasons data.
-Budget/revenue were heavily zero-inflated, and a small number of near-zero "placeholder" budgets (as low as $5) were producing ROI values exceeding 2,000,000% and dominating every financial chart. Fixed with a $10,000 minimum threshold on both fields, excluding only 15 of 3,556 titles (0.4%) — verified by bracket analysis before applying.
-show_id was not a globally unique key — 397 IDs were reused across the movies and TV files for different titles. Fixed with a composite key (show_id || type).
-9 true duplicate rows existed within the TV shows source file — removed via ROW_NUMBER() deduplication.
-An "Unknown" placeholder genre was inflating genre-diversity counts and made a "distinct genres per year" chart look like it had a real trend, when it was actually just a data cleanup artifact settling out over time — excluded at the source.
-Comma-splitting cast names produced garbage entries: names like "Robert Downey, Jr." were splitting into a real name plus a fake "Jr." cast member. Combined with this, Power BI's case-insensitive relationship matching collided with Snowflake's case-sensitive data (JR, Jr, Jr. all existed as separate values) — fixed with INITCAP() normalization and explicit exclusion of honorific fragments in the cast-splitting model.
+rating and vote_average were 100% identical columns - dropped the redundant one.
+duration was 100% null for every movie row - excluded from the movies model; TV shows kept their real seasons data.
+Budget/revenue were heavily zero-inflated, and a small number of near-zero "placeholder" budgets (as low as $5) were producing ROI values exceeding 2,000,000% and dominating every financial chart. Fixed with a $10,000 minimum threshold on both fields, excluding only 15 of 3,556 titles (0.4%) - verified by bracket analysis before applying.
+show_id was not a globally unique key - 397 IDs were reused across the movies and TV files for different titles. Fixed with a composite key (show_id || type).
+9 true duplicate rows existed within the TV shows source file - removed via ROW_NUMBER() deduplication.
+An "Unknown" placeholder genre was inflating genre-diversity counts and made a "distinct genres per year" chart look like it had a real trend, when it was actually just a data cleanup artifact settling out over time - excluded at the source.
+Comma-splitting cast names produced garbage entries: names like "Robert Downey, Jr." were splitting into a real name plus a fake "Jr." cast member. Combined with this, Power BI's case-insensitive relationship matching collided with Snowflake's case-sensitive data (JR, Jr, Jr. all existed as separate values) - fixed with INITCAP() normalization and explicit exclusion of honorific fragments in the cast-splitting model.
 Dashboard Pages
 1. Financial Performance
 
@@ -35,7 +35,7 @@ Budget vs. revenue scatter, Top 20 ROI by title, ROI trend by release year. Expl
 
 2. Content Strategy Shift
 
-Movies vs. TV shows over time, with an interactive toggle to include/exclude 2025 — a partial year in this dataset that produces a batch-release spike unrelated to any real change in Netflix's content strategy. Title count by genre, filterable by genre via multi-select slicer.
+Movies vs. TV shows over time, with an interactive toggle to include/exclude 2025 - a partial year in this dataset that produces a batch-release spike unrelated to any real change in Netflix's content strategy. Title count by genre, filterable by genre via multi-select slicer.
 
 3. Global Expansion
 
